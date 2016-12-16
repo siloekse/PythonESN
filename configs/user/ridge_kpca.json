@@ -1,0 +1,4 @@
+{
+  "regression_method": "ridge",
+  "embedding": "kpca"
+}

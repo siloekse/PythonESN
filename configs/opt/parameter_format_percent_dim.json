@@ -1,0 +1,44 @@
+{
+    "regression_parameters": {
+      "linear": null,
+      "lasso": "regularization",
+      "ridge": "regularization",
+      "enet": ["regularization", "l1_ratio"],
+      "nusvr": ["C", "nu", "svrgamma"]
+    },
+
+    "n_dim": {
+      "identity": null,
+
+      "pca": {
+        "operator": "multiply_intreturn",
+        "val1": "n_dim_percent",
+        "val2": "n_internal_units"
+      },
+
+      "kpca": {
+        "operator": "multiply_intreturn",
+        "val1": "n_dim_percent",
+        "val2": "n_internal_units"
+      }
+    },
+
+    "embedding_parameters": {
+      "identity": null,
+      "pca": null,
+      "kpca": "kpcagamma"
+    },
+
+    "regression_method": "regression_method",
+    "embedding": "embedding",
+    "n_internal_units": "n_internal_units",
+    "spectral_radius": "spectral_radius",
+    "connectivity": "connectivity",
+    "input_scaling": "input_scaling",
+    "input_shift": "input_shift",
+    "teacher_scaling": "teacher_scaling",
+    "teacher_shift": "teacher_shift",
+    "feedback_scaling": "feedback_scaling",
+    "noise_level": "noise_level",
+    "n_drop": "n_drop"
+}

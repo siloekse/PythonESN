@@ -1,0 +1,4 @@
+{
+  "regression_method": "enet",
+  "embedding": "pca"
+}
