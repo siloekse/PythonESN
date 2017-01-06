@@ -2,7 +2,7 @@
 This is an implementation of Echo State Networks (ESN) for Python with
 parameter tuning via evolutionary algorithms. The implementation
 supports dimensionality reduction between the reservoir and the readout
-layer as described in [1].
+layer as described in [^fn1].
 
 Currently, the dimensionality reduction layer could either be *identity*
 (no dimensionality reduction), *pca* (Principal Component Analysis) or
@@ -33,3 +33,6 @@ specified in the user config file.
 The parameters found by the optimization scheme are saved to an ESN
 config file in */configs/esn*, which is used to initialize the
 network for experiments. The results are saved in *results*.
+
+[^fn1]: Løkse, S., Bianchi, F. M., & Jenssen, R. (2016). Training Echo
+  State Networks with Regularization through Dimensionality Reduction. arXiv preprint arXiv:1608.04622.
