@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
-
 import argparse
 import json
+import logging
 import numpy as np
 import os
 import random
@@ -20,11 +20,17 @@ if sys.version_info[0] == 3:
 else:
     str_type = basestring,
 
+# Initialize logger
+logger = logging.getLogger()
+handler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s %(name)-15s %(levelname)-8s %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
+
 ###############################################################################################
 # The next part needs to be in the global scope, since all workers
-# need access to these variables. I got pickling problems when using
-# them as arguments in the evaluation function. I couldn't pickle the
-# partial function for some reason, even though it should be supported.
+# need access to these variables (pickling problems).
 ############################################################################
 # Parse input arguments
 ############################################################################
@@ -32,18 +38,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument("data", help="path to data file", type=str)
 parser.add_argument("optconfig", help="path to optimization config file", type=str)
 parser.add_argument("esnconfig", help="path to where the ESN config file should be saved", type=str)
+parser.add_argument("--percent_dim", help="use dimensionality as a percentage of the reservoir size. DEFAULT: False.", type=bool, default=False, const=True, nargs='?')
 args = parser.parse_args()
 
 ############################################################################
 # Read config file
 ############################################################################
-paramhelper = parameterhelper.ParameterHelper(args.optconfig)
+paramhelper = parameterhelper.ParameterHelper(args.optconfig, args.percent_dim)
 optconfig = paramhelper._optimization
 
 ############################################################################
 # Load data
 ############################################################################
-print("Loading data (%s)"%args.data)
+logger.info("Loading data (%s)"%args.data)
 # If the data is stored in a directory, load the data from there. Otherwise,
 # load from the single file and split it.
 if os.path.isdir(args.data):
@@ -303,7 +310,7 @@ def init_stats():
     return stats
 
 def main():
-    print("Initializing genetic algorithm")
+    logger.info("Initializing genetic algorithm")
 
     # Generate prototype (recipe) for the individuals in the population
     prototype, sigma = paramhelper.get_prototype()
@@ -324,7 +331,7 @@ def main():
     n_offsprings = optconfig['n_offsprings']
     halloffame = tools.HallOfFame(maxsize=1)
 
-    print("Running GA optimization")
+    logger.info("Running GA optimization")
 
     final_population, logbook = algorithms.eaMuPlusLambda(pop, toolbox, mu=optconfig['population_size'],
             lambda_ = n_offsprings, cxpb=cxpb, mutpb=mutpb, ngen=ngen, stats=stats, verbose=True, halloffame=halloffame)
@@ -332,10 +339,10 @@ def main():
     ############################################################################
     # Save ESN config
     ############################################################################"""
-    print("Saving the best parameters")
+    logger.info("Saving the best parameters")
     save_parameters(halloffame, args.esnconfig)
 
-    print("Done")
+    logger.info("Done")
 
 if __name__ == "__main__":
     main()

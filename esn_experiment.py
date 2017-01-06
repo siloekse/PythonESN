@@ -1,11 +1,20 @@
 import argparse
 import json
+import logging
 import numpy as np
 import os
 
 from scoop import futures
 
 import esnet
+
+# Initialize logger
+logger = logging.getLogger(__name__)
+handler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 ###############################################################################################
 # The next part needs to be in the global scope, since all workers

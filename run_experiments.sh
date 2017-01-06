@@ -1,5 +1,5 @@
 #!/bin/bash
-# Don't want numpy to use OMP
+# Don't want numpy to use OMP. Parallelization via SCOOP.
 export OMP_NUM_THREADS=1
 
 # Find config/data files and names

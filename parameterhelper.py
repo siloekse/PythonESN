@@ -1,5 +1,6 @@
 import copy
 import json
+import logging
 from math import ceil
 import os, sys
 
@@ -9,15 +10,26 @@ if sys.version_info[0] == 3:
 else:
     str_type = basestring,
 
+# Initialize logger
+logger = logging.getLogger(__name__)
+
 # Set paths
 CONFIG_PATH = './configs/opt'
 USER_PATH = './configs/user'
 DEFAULT_CONFIG = 'default'
-PARAMETER_FORMAT_CONFIG = 'parameter_format'
-
+PARAMETER_FORMAT_CONFIG_PERCENT_DIM = 'parameter_format_percent_dim'
+PARAMETER_FORMAT_CONFIG_N_DIM = 'parameter_format_n_dim'
 
 class ParameterHelper(object):
-    def __init__(self, filename):
+    def __init__(self, filename, percent_dim = False):
+        # Choose correct format file
+        if percent_dim:
+            logger.info('Loading config for dimensionality as a percentage of the reservoir size.')
+            parformat_config = PARAMETER_FORMAT_CONFIG_PERCENT_DIM
+        else:
+            logger.info('Loading config for dimensionality as an integer.')
+            parformat_config = PARAMETER_FORMAT_CONFIG_N_DIM
+
         # Read config files
         default_config = json.load(open(CONFIG_PATH + '/' + DEFAULT_CONFIG + '.json', 'r'))
 
@@ -32,17 +44,17 @@ class ParameterHelper(object):
 
         if os.path.exists(USER_PATH + '/' + filename + extension):
             # Package provided config file exists!
-            print("Config: %s (overload)"% filename)
+            logger.info("Config: %s (overload)"% filename)
             configfile = USER_PATH + '/' + filename + extension
 
         elif os.path.exists(filename + extension):
             # Custom config file exists!
-            print("Config: %s (overload)"% filename)
+            logger.info("Config: %s (overload)"% filename)
             configfile = filename + extension
 
         else:
             # None exist. Use default.
-            print("Could not find the provided config. Using default.")
+            logger.warning("Could not find the provided config. Using default.")
             use_default_config = True
 
         # Overload default config file if appropriate
@@ -55,7 +67,7 @@ class ParameterHelper(object):
             self._optconfig = default_config
 
         # Read the parameter format
-        self._parameter_format = json.load(open(CONFIG_PATH + '/' + PARAMETER_FORMAT_CONFIG + '.json', 'r'))
+        self._parameter_format = json.load(open(CONFIG_PATH + '/' + parformat_config + '.json', 'r'))
 
         # Define operators
         self._operators = {"multiply_intreturn": self._multiply_intreturn}
